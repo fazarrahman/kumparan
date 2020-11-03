@@ -13,6 +13,8 @@ go run cmd/*.go run-nsq
 ## DATABASE
 ### Create news table query : 
 
+Please set the connection setting to .env file
+
 CREATE TABLE kumparandb.news (
   `id` int NOT NULL AUTO_INCREMENT,
   `author` varchar(100) NOT NULL,
