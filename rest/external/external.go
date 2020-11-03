@@ -8,32 +8,44 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/nsqio/go-nsq"
 )
 
+// Rest ...
 type Rest struct {
 	newsRepo repository.Repository
 	producer *nsq.Producer
 }
 
+// New ...
 func New(_repo repository.Repository, _producer *nsq.Producer) *Rest {
 	return &Rest{newsRepo: _repo, producer: _producer}
 }
 
 // News ...
 type News struct {
+	Author  string    `json:"author"`
+	Body    string    `json:"body"`
+	Created time.Time `json:"created"`
+}
+
+// PostNewsRequest ...
+type PostNewsRequest struct {
 	Author string `json:"author"`
 	Body   string `json:"body"`
 }
 
+// Register ...
 func (r *Rest) Register(router *mux.Router) {
 	router.HandleFunc("/news", r.GetNews).Methods("GET")
 	router.HandleFunc("/news", r.PostNews).Methods("POST")
 
 }
 
+// GetNews ...
 func (rest *Rest) GetNews(w http.ResponseWriter, r *http.Request) {
 	var news []*News
 
@@ -50,8 +62,9 @@ func (rest *Rest) GetNews(w http.ResponseWriter, r *http.Request) {
 
 	for _, n := range newsEnt {
 		news = append(news, &News{
-			Author: n.Author,
-			Body:   n.Body,
+			Author:  n.Author,
+			Body:    n.Body,
+			Created: n.Created,
 		})
 	}
 
@@ -60,8 +73,9 @@ func (rest *Rest) GetNews(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
+// PostNews ...
 func (rest *Rest) PostNews(w http.ResponseWriter, r *http.Request) {
-	var news News
+	var news PostNewsRequest
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -94,8 +108,6 @@ func (rest *Rest) PostNews(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("Successfully publish the news data")
-
-	//rest.producer.Stop()
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(news)

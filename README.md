@@ -1,6 +1,9 @@
 # KUMPARAN 
 
 ## RUN COMMAND
+### RUN NSQD
+nsqd --lookupd-tcp-address=127.0.0.1:4160 &
+
 ### To run the endpoints and nsq publisher, please use this command :
 go run cmd/*.go run-app 
 
@@ -10,10 +13,11 @@ go run cmd/*.go run-nsq
 ## DATABASE
 ### Create news table query : 
 
-CREATE TABLE `news` (
+CREATE TABLE kumparandb.news (
   `id` int NOT NULL AUTO_INCREMENT,
   `author` varchar(100) NOT NULL,
   `body` varchar(255) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8
 

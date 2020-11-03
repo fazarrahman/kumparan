@@ -8,17 +8,23 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// Mysqldb ...
 type Mysqldb struct {
 	db *sqlx.DB
 }
 
+// New ...
 func New(_db *sqlx.DB) *Mysqldb {
 	return &Mysqldb{db: _db}
 }
 
+// GetNews ...
 func (m *Mysqldb) GetNews() ([]*entity.News, error) {
 	var news []*entity.News
-	err := m.db.Select(&news, "select id, author, body from news")
+	err := m.db.Select(&news,
+		`select id, author, body, created
+		from news
+		order by created desc`)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
@@ -30,6 +36,7 @@ func (m *Mysqldb) GetNews() ([]*entity.News, error) {
 	return news, nil
 }
 
+// InsertNews ...
 func (m *Mysqldb) InsertNews(news *entity.News) error {
 	_, err := m.db.Exec("insert into news (author, body) values(?,?)", news.Author, news.Body)
 	if err != nil {

@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	db "kumparan/config/mysql"
+	rdx "kumparan/config/radix"
 	news_mysql "kumparan/domain/news/repository/mysql"
+	rdx_repo "kumparan/domain/news/repository/radix"
 	"kumparan/helper"
 
 	"kumparan/rest/external"
@@ -22,8 +24,15 @@ func app() {
 	}
 	log.Println("Database is successfully initialized")
 
+	radixInit, err := rdx.New()
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println("Redis has been successfully initialized")
+
 	newsMysqlRepo := news_mysql.New(dbClient)
-	log.Println("News repository is successfully initialized")
+	rdxRepository := rdx_repo.New(radixInit, newsMysqlRepo)
+	log.Println("Repositories are successfully initialized")
 
 	// producer
 	config := nsq.NewConfig()
@@ -36,7 +45,7 @@ func app() {
 	log.Println("NSQ Producer is successfully initialized")
 
 	router := mux.NewRouter()
-	external.New(newsMysqlRepo, producer).Register(router)
+	external.New(rdxRepository, producer).Register(router)
 
 	http.Handle("/", router)
 	fmt.Println("Connected to port " + helper.GetEnv("APP_PORT", ""))

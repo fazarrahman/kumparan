@@ -9,6 +9,7 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
+	github.com/mediocregopher/radix/v3 v3.6.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
 	github.com/nsqio/go-nsq v1.0.8

@@ -10,20 +10,23 @@ import (
 	"github.com/nsqio/go-nsq"
 )
 
+// NSQConsumer ...
 type NSQConsumer struct {
 	newsRepo repository.Repository
 }
 
+// New ...
 func New(_repo repository.Repository) *NSQConsumer {
 	return &NSQConsumer{newsRepo: _repo}
 }
 
-// News ...
+// NewsInsertRequest ...
 type NewsInsertRequest struct {
 	Author string `json:"author"`
 	Body   string `json:"body"`
 }
 
+// InitNSQ ...
 func (n *NSQConsumer) InitNSQ() {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
@@ -46,7 +49,7 @@ func (n *NSQConsumer) InitNSQ() {
 		}
 
 		log.Println("Data is successfully inserted")
-		//wg.Done()
+
 		return nil
 	}))
 	err := q.ConnectToNSQD("127.0.0.1:4150")
@@ -55,28 +58,3 @@ func (n *NSQConsumer) InitNSQ() {
 	}
 	wg.Wait()
 }
-
-/*
-func (n *NSQConsumer) ConsumerInsertNews(message *nsq.Message) error {
-	{
-		var news NewsInsertRequest
-		_ = json.Unmarshal(message.Body, &news)
-		log.Printf("Message content : %v", news)
-
-		log.Println("Inserting news data")
-		err := n.newsRepo.InsertNews(&entity.News{
-			Author: news.Author,
-			Body:   news.Body,
-		})
-
-		if err != nil {
-			log.Fatalln("Error when inserting news : ", err.Error())
-		}
-
-		log.Println("Data is successfully inserted")
-		//wg.Done()
-		return nil
-	}
-}
-
-*/
