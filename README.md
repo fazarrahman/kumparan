@@ -1,12 +1,14 @@
-# kumparan 
+# KUMPARAN 
 
-# To run the endpoints and nsq publisher, please use this command :
+## RUN COMMAND
+### To run the endpoints and nsq publisher, please use this command :
 go run cmd/*.go run-app 
 
-# To run the nsq consumer, please use this command :
+### To run the nsq consumer, please use this command :
 go run cmd/*.go run-nsq
 
-# Create news table query : 
+## DATABASE
+### Create news table query : 
 
 CREATE TABLE `news` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -15,11 +17,12 @@ CREATE TABLE `news` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8
 
-# Get news endpoint curl :
+## ENDPOINTS
+### Get news endpoint curl :
 curl --location --request GET 'http://localhost:8080/news' \
 --header 'Content-Type: application/json'
 
-# Post news endpoint curl :
+### Post news endpoint curl :
 curl --location --request POST 'http://localhost:8080/news' \
 --header 'Content-Type: application/json' \
 --data-raw '{
